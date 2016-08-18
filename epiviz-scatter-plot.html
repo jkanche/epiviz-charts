@@ -1,0 +1,107 @@
+<!-- Polymer dependency -->
+<link rel="import" href="../polymer/polymer.html">
+
+<script src="src/js/epiviz-scatter-plot.js"></script>
+<script src="../d3/d3.js"></script>
+
+<dom-module id="epiviz-scatter-plot">
+
+    <template>
+
+        <style>
+        /* local DOM styles go here */
+        :host {
+            display: inline-block;
+        }
+
+        .axis path, .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        ::shadow .unhovered {
+            stroke: #000;
+            stroke-width: 2px;
+            fill: steelblue;
+        }
+
+        ::shadow .hovered {
+            stroke: orange;
+            stroke-width: 5px;
+            fill: steelblue;
+        }
+        </style>
+
+        <!-- local DOM goes here -->
+        <div id="chart"></div>
+    
+    </template>
+
+    <script>
+        Polymer({
+            /* Custom element html tag */
+            is: 'epiviz-scatter-plot',
+
+            /* Properties that can be defined on the element */
+            properties: {
+                dataX: {
+                    type: Array,
+                    notify: true
+                },
+                dataY: {
+                    type: Array,
+                    notify: true
+                },
+                data: {
+                    type: Array,
+                    notify: true
+                },
+                plotId: {
+                    type: String,
+                    value: function() {
+                        var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        var result = '';
+                        var size = 7;
+
+                        for (var i = 0; i < size; ++i) {
+                            result += chars[Math.round(Math.random() * (chars.length - 1))];
+                        }
+
+                        return result;
+                    }
+                },
+            },
+
+            // Initialization that should happen or use FactoryImpl 
+            // created: function() {},
+
+            /* callback function after the element is initialized */
+            ready: function() {
+
+                var self = this;
+                this.scopeSubtree(this.$.chart, true);
+
+                var testPlot = epiviz_scatter().create(this.$.chart, this.data);
+                testPlot.draw();
+
+                // testPlot.on("hover", this.fireChartHover);
+                testPlot.on("hover", function(data) {
+                    self.fire('hover', {
+                        data: data
+                    });
+                });
+                // testPlot.on("click", this.fireChartClick);
+            },
+
+            fireChartHover: function(data) {
+
+                var self = Polymer.dom(this);
+
+                self.fire('hover', {
+                    data: data
+                });
+            }
+        });
+    </script>
+</dom-module>

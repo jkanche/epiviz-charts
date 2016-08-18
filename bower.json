@@ -1,0 +1,29 @@
+{
+  "name": "epiviz-plots",
+  "authors": [
+    "Jayaram Kancherla <jayaram.kancherla@gmail.com>"
+  ],
+  "description": "javascript library for epiviz charts and tracks",
+  "main": "",
+  "keywords": [
+    "epiviz",
+    "charts",
+    "tracks",
+    "bioinformatics",
+    "visualization"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jkanche/epiviz-charts",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "v3.4.13",
+    "google-closure-library": "*",
+    "polymer": "^1.6.1"
+  }
+}
