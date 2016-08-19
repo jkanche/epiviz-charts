@@ -12,6 +12,7 @@
         /* local DOM styles go here */
         :host {
             display: inline-block;
+            font-family: sans-serif;
         }
 
         .axis path, .axis line {
@@ -20,16 +21,46 @@
             shape-rendering: crispEdges;
         }
 
+        ::shadow circle {
+            fill-opacity: 0.6;
+        }
+
         ::shadow .unhovered {
-            stroke: #000;
-            stroke-width: 2px;
             fill: steelblue;
         }
 
         ::shadow .hovered {
             stroke: orange;
-            stroke-width: 5px;
+            stroke-width: 2px;
             fill: steelblue;
+        }
+
+        .axis .tick line {
+            stroke: lightgrey;
+            opacity: 0.7;
+            shape-rendering: crispEdges;
+        }
+
+        text {
+            font-size:11px;
+            text-anchor:middle;
+        }
+        
+        .axis path {
+            stroke-width: 1;
+        }
+
+        ::shadow div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 60px;
+            height: 28px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
         }
         </style>
 
@@ -45,18 +76,36 @@
 
             /* Properties that can be defined on the element */
             properties: {
-                dataX: {
-                    type: Array,
+                // dataX: {
+                //     type: Array,
+                //     notify: true
+                // },
+                // dataY: {
+                //     type: Array,
+                //     notify: true
+                // },
+
+                dimX: {
+                    type: String,
                     notify: true
                 },
-                dataY: {
-                    type: Array,
+
+                dimY: {
+                    type: String,
                     notify: true
                 },
+
+                dimKey: {
+                    type: String,
+                    notify: true
+                },
+
                 data: {
                     type: Array,
-                    notify: true
+                    notify: true,
+                    observer: '_dataChanged'
                 },
+
                 plotId: {
                     type: String,
                     value: function() {
@@ -71,6 +120,56 @@
                         return result;
                     }
                 },
+
+                colors: {
+                    type: Array,
+                    notify: true,
+                    observer: '_colorsChanged'
+                },
+
+                chartProperties: {
+                    type: Object,
+                    notify: true,
+                    observer: '_propChanged'
+                }
+            },
+
+            observers: [
+                '_dimChanged(dimX.*, dimY.*, dimKey.*)'
+            ],
+
+            _colorsChanged: function() {
+                if (this.plot != null) {
+                    this.plot.setColors(this.colors);
+                }
+            },
+
+            _propChanged: function() {
+                // properties can be circleRadius and GroupBy
+                if (this.plot != null) {
+                    this.plot.setProperties(this.chartProperties.circleRadius, this.chartProperties.groupBy);
+                }
+            },
+
+            _dimChanged: function() {
+                if (this.plot != null) {
+                    this.plot.useKeys(this.dimX, this.dimY, this.dimKey);
+                }
+            },
+
+            _dataChanged: function() {
+                if (this.data != null && this.data.length > 0 && this.plot != null) {
+                    this.plot.setData(this.data);
+                    this._draw();
+                }
+            },
+
+            highlight: function(e) {
+                // self.plot.highlight(e);
+            },
+
+            unHighlight: function() {
+                // self.plot.highlight()
             },
 
             // Initialization that should happen or use FactoryImpl 
@@ -78,29 +177,39 @@
 
             /* callback function after the element is initialized */
             ready: function() {
-
                 var self = this;
-                this.scopeSubtree(this.$.chart, true);
+                // style observer on charts
+                self.scopeSubtree(self.$.chart, true);
 
-                var testPlot = epiviz_scatter().create(this.$.chart, this.data);
-                testPlot.draw();
+                // listen to events 
+                var parent = self.parentNode;
+                parent.addEventListener('hoverAllCharts', function(e) {
+                    self.highlight(e);
+                }.bind(self));
 
-                // testPlot.on("hover", this.fireChartHover);
-                testPlot.on("hover", function(data) {
+                parent.addEventListener('unHoverAllCharts', function(e) {
+                    self.unHighlight(e);
+                }.bind(self));
+
+                self.plot = epiviz_scatter().init(self.$.chart);
+
+                //this._colorsChanged();
+                self._dataChanged();
+
+                // Listen to hover event on the chart
+                self.plot.on("hover", function(data) {
+                    console.log(data);
+                    //fire polymer event
                     self.fire('hover', {
+
                         data: data
                     });
                 });
-                // testPlot.on("click", this.fireChartClick);
             },
 
-            fireChartHover: function(data) {
-
-                var self = Polymer.dom(this);
-
-                self.fire('hover', {
-                    data: data
-                });
+            _draw: function() {
+                this.plot.useKeys(this.dimX, this.dimY, this.dimKey);
+                this.plot.draw();
             }
         });
     </script>

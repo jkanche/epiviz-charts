@@ -7,8 +7,8 @@
     <style>
         /* local DOM styles go here */
         
-        :host {
-            display: inline-block;
+        body {
+            font-family: sans-serif;
         }
         
         .axis path,
@@ -18,109 +18,62 @@
             shape-rendering: crispEdges;
         }
         
-        .unhovered {
-            stroke: #000;
-            stroke-width: 2px;
-            fill: steelblue;
+        circle {
+            fill-opacity: 0.6;
         }
         
         .hovered {
             stroke: orange;
-            stroke-width: 5px;
-            fill: steelblue;
+            stroke-width: 2px;
+        }
+        
+        .axis .tick line {
+            stroke: lightgrey;
+            opacity: 0.7;
+            shape-rendering: crispEdges;
+        }
+        
+        text {
+            font-size: 11px;
+            text-anchor: middle;
+        }
+        
+        .axis path {
+            stroke-width: 1;
+        }
+        
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 60px;
+            height: 28px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
         }
     </style>
 </head>
 
 <body>
     <h1>Epiviz Scatter.js test</h1>
+    <div id="origData"></div>
     <div id="testjs"></div>
     <script>
-        var data = [{
-            "x": 49,
-            "y": 7,
-            "key": 59
-        }, {
-            "x": 76,
-            "y": 80,
-            "key": 87
-        }, {
-            "x": 5,
-            "y": 1,
-            "key": 29
-        }, {
-            "x": 3,
-            "y": 11,
-            "key": 13
-        }, {
-            "x": 86,
-            "y": 54,
-            "key": 42
-        }, {
-            "x": 58,
-            "y": 88,
-            "key": 98
-        }, {
-            "x": 56,
-            "y": 19,
-            "key": 68
-        }, {
-            "x": 79,
-            "y": 89,
-            "key": 77
-        }, {
-            "x": 74,
-            "y": 39,
-            "key": 41
-        }, {
-            "x": 97,
-            "y": 50,
-            "key": 14
-        }, {
-            "x": 29,
-            "y": 100,
-            "key": 15
-        }, {
-            "x": 81,
-            "y": 12,
-            "key": 21
-        }, {
-            "x": 96,
-            "y": 26,
-            "key": 98
-        }, {
-            "x": 83,
-            "y": 46,
-            "key": 59
-        }, {
-            "x": 94,
-            "y": 58,
-            "key": 95
-        }, {
-            "x": 67,
-            "y": 43,
-            "key": 55
-        }, {
-            "x": 73,
-            "y": 2,
-            "key": 81
-        }, {
-            "x": 16,
-            "y": 26,
-            "key": 95
-        }, {
-            "x": 54,
-            "y": 20,
-            "key": 9
-        }, {
-            "x": 23,
-            "y": 34,
-            "key": 12
-        }];
+        var data = [{"gene":"Baxter Healthcare Corporation","expression":46.4,"sample_count":38,"sample_gender":"Female"},{"gene":"Rebel Distributors Corp","expression":64.62,"sample_count":73,"sample_gender":"Female"},{"gene":"Zydus Pharmaceuticals (USA) Inc.","expression":88.7,"sample_count":63,"sample_gender":"Female"},{"gene":"Eli Lilly and Company","expression":44.33,"sample_count":48,"sample_gender":"Female"},{"gene":"Nelco Laboratories, Inc.","expression":91.52,"sample_count":25,"sample_gender":"Male"},{"gene":"Major Pharmaceuticals","expression":11.8,"sample_count":84,"sample_gender":"Female"},{"gene":"Ranbaxy Pharmaceuticals Inc.","expression":58.46,"sample_count":47,"sample_gender":"Female"},{"gene":"Viny Health and Beauty Inc","expression":32.63,"sample_count":51,"sample_gender":"Male"},{"gene":"Aurobindo Pharma Limited","expression":39.54,"sample_count":65,"sample_gender":"Male"},{"gene":"Ranbaxy Pharmaceuticals Inc.","expression":63.86,"sample_count":43,"sample_gender":"Male"},{"gene":"United Therapeutics Corp.","expression":61.45,"sample_count":3,"sample_gender":"Female"},{"gene":"Major Pharmaceuticals","expression":32.57,"sample_count":41,"sample_gender":"Male"},{"gene":"Unique Holding Group Inc","expression":96.37,"sample_count":18,"sample_gender":"Male"},{"gene":"American Regent, Inc.","expression":11.71,"sample_count":53,"sample_gender":"Male"},{"gene":"B. Braun Medical Inc.","expression":36.21,"sample_count":59,"sample_gender":"Female"},{"gene":"A-S Medication Solutions LLC","expression":78.54,"sample_count":8,"sample_gender":"Male"},{"gene":"SYOXSA, Inc.","expression":54.25,"sample_count":40,"sample_gender":"Female"},{"gene":"Lancaster S.A.M.","expression":21.23,"sample_count":14,"sample_gender":"Female"},{"gene":"Natural Health Supply","expression":28.73,"sample_count":54,"sample_gender":"Female"},{"gene":"A-S Medication Solutions LLC","expression":23.62,"sample_count":22,"sample_gender":"Female"},{"gene":"Legacy Pharmaceutical Packaging","expression":61.9,"sample_count":24,"sample_gender":"Male"},{"gene":"Bryant Ranch Prepack","expression":18.11,"sample_count":20,"sample_gender":"Female"},{"gene":"NorthStar Rx LLC","expression":65.87,"sample_count":17,"sample_gender":"Female"},{"gene":"KC Pharmaceuticals, Inc.","expression":27.39,"sample_count":77,"sample_gender":"Male"},{"gene":"Harmon Stores Inc.","expression":57.33,"sample_count":74,"sample_gender":"Male"},{"gene":"Rebel Distributors Corp.","expression":34.35,"sample_count":43,"sample_gender":"Female"},{"gene":"Swiss-American Products","expression":89.45,"sample_count":21,"sample_gender":"Male"},{"gene":"Apotheca Company","expression":65.96,"sample_count":47,"sample_gender":"Female"},{"gene":"GLENVIEW PHARMA INC.","expression":28.86,"sample_count":68,"sample_gender":"Male"},{"gene":"Perrigo New York Inc","expression":97.33,"sample_count":93,"sample_gender":"Female"},{"gene":"Mckesson Corporation","expression":82.99,"sample_count":26,"sample_gender":"Female"},{"gene":"Actavis Inc","expression":38.65,"sample_count":59,"sample_gender":"Male"},{"gene":"Sandoz Inc","expression":67.77,"sample_count":57,"sample_gender":"Male"},{"gene":"ALK-Abello, Inc.","expression":99.17,"sample_count":88,"sample_gender":"Female"},{"gene":"Have and Be Co., Ltd.","expression":13.69,"sample_count":99,"sample_gender":"Female"},{"gene":"Physicians Total Care, Inc.","expression":89.05,"sample_count":12,"sample_gender":"Male"},{"gene":"Laboratoires dermo Cosmetik Inc","expression":84.74,"sample_count":93,"sample_gender":"Male"},{"gene":"Bayshore Pharmaceuticals, LLC","expression":56.95,"sample_count":16,"sample_gender":"Male"},{"gene":"Lake Erie Medical & Surgical Supply DBA Quality Care Products LLC","expression":18.02,"sample_count":72,"sample_gender":"Male"},{"gene":"Cardinal Health","expression":72.03,"sample_count":20,"sample_gender":"Female"},{"gene":"LernaPharm Loris Inc.","expression":92.5,"sample_count":68,"sample_gender":"Male"},{"gene":"CVS Pharmacy","expression":11.31,"sample_count":58,"sample_gender":"Female"},{"gene":"REMEDYREPACK INC.","expression":75.0,"sample_count":49,"sample_gender":"Male"},{"gene":"Sagent Pharmaceuticals","expression":62.84,"sample_count":50,"sample_gender":"Female"},{"gene":"E. Fougera & Co. a division of Fougera Pharmaceuticals Inc.","expression":87.72,"sample_count":26,"sample_gender":"Female"},{"gene":"Dr. Reddy's Laboratories Limited","expression":18.13,"sample_count":98,"sample_gender":"Female"},{"gene":"X-GEN Pharmaceuticals, Inc.","expression":80.62,"sample_count":83,"sample_gender":"Male"},{"gene":"Hospira, Inc.","expression":5.65,"sample_count":92,"sample_gender":"Female"},{"gene":"Fresenius Kabi USA, LLC","expression":71.47,"sample_count":26,"sample_gender":"Male"},{"gene":"Global Pharmaceuticals, Division of Impax Laboratories Inc.","expression":97.04,"sample_count":94,"sample_gender":"Female"},{"gene":"STAT RX USA LLC","expression":77.53,"sample_count":32,"sample_gender":"Male"},{"gene":"KAISER FOUNDATION HOSPITALS","expression":38.14,"sample_count":23,"sample_gender":"Male"},{"gene":"Carilion Materials Management","expression":58.38,"sample_count":43,"sample_gender":"Male"},{"gene":"Cardinal Health","expression":11.14,"sample_count":28,"sample_gender":"Male"},{"gene":"Allergan, Inc.","expression":54.48,"sample_count":38,"sample_gender":"Male"},{"gene":"Physicians Total Care, Inc.","expression":60.52,"sample_count":57,"sample_gender":"Female"},{"gene":"CSL Behring AG","expression":44.48,"sample_count":50,"sample_gender":"Female"},{"gene":"International Labs, Inc.","expression":28.93,"sample_count":100,"sample_gender":"Female"},{"gene":"VS Shinbi Co., Ltd.","expression":41.19,"sample_count":20,"sample_gender":"Female"},{"gene":"Cardinal Health","expression":67.19,"sample_count":26,"sample_gender":"Male"},{"gene":"King Bio Inc.","expression":46.19,"sample_count":95,"sample_gender":"Female"},{"gene":"Acino Products, LLC.","expression":56.55,"sample_count":2,"sample_gender":"Female"},{"gene":"Family Dollar Services Inc.","expression":84.09,"sample_count":7,"sample_gender":"Male"},{"gene":"Teva Parenteral Medicines, Inc.","expression":55.98,"sample_count":1,"sample_gender":"Male"},{"gene":"REMEDYREPACK INC.","expression":36.18,"sample_count":53,"sample_gender":"Female"},{"gene":"Antigen Laboratories, Inc.","expression":26.72,"sample_count":56,"sample_gender":"Male"},{"gene":"General Injectables & Vaccines, Inc","expression":75.24,"sample_count":71,"sample_gender":"Male"},{"gene":"PRINCE OF PEACE ENTERPRISES INC.","expression":29.09,"sample_count":56,"sample_gender":"Male"},{"gene":"Cardinal Health","expression":1.03,"sample_count":55,"sample_gender":"Female"},{"gene":"Shire US Manufacturing Inc.","expression":78.18,"sample_count":42,"sample_gender":"Female"},{"gene":"Nelco Laboratories, Inc.","expression":4.36,"sample_count":55,"sample_gender":"Female"},{"gene":"Cardinal Health","expression":98.66,"sample_count":87,"sample_gender":"Male"},{"gene":"Parfums Christian Dior","expression":49.14,"sample_count":85,"sample_gender":"Male"},{"gene":"Nelco Laboratories, Inc.","expression":20.01,"sample_count":27,"sample_gender":"Female"},{"gene":"Physicians Total Care, Inc.","expression":1.4,"sample_count":36,"sample_gender":"Female"},{"gene":"HEB","expression":83.17,"sample_count":70,"sample_gender":"Male"},{"gene":"Supervalu Inc","expression":84.58,"sample_count":67,"sample_gender":"Male"},{"gene":"Bryant Ranch Prepack","expression":24.24,"sample_count":9,"sample_gender":"Male"},{"gene":"Rhodes Pharmaceuticals L.P.","expression":34.4,"sample_count":35,"sample_gender":"Female"},{"gene":"State of Florida DOH Central Pharmacy","expression":59.61,"sample_count":68,"sample_gender":"Female"},{"gene":"Aphena Pharma Solutions - Tennessee, LLC","expression":53.01,"sample_count":69,"sample_gender":"Male"},{"gene":"Torrent Pharmaceuticals Limited","expression":97.7,"sample_count":89,"sample_gender":"Female"},{"gene":"Dutch Ophthalmic Research Center International B.V.","expression":42.01,"sample_count":30,"sample_gender":"Male"},{"gene":"Cephalon, Inc.","expression":70.84,"sample_count":98,"sample_gender":"Male"},{"gene":"Procter & Gamble Manufacturing Company","expression":25.57,"sample_count":45,"sample_gender":"Female"},{"gene":"Mylan Institutional LLC","expression":60.54,"sample_count":3,"sample_gender":"Male"},{"gene":"Artemis Bio-Solutions Inc","expression":2.32,"sample_count":40,"sample_gender":"Female"},{"gene":"Physicians Total Care, Inc","expression":53.32,"sample_count":79,"sample_gender":"Female"},{"gene":"Golden State Medical Supply, Inc.","expression":47.04,"sample_count":93,"sample_gender":"Female"},{"gene":"Imagenetix","expression":58.35,"sample_count":78,"sample_gender":"Male"},{"gene":"Parfums Christian Dior","expression":81.39,"sample_count":32,"sample_gender":"Female"},{"gene":"Cardinal Health","expression":31.24,"sample_count":80,"sample_gender":"Male"},{"gene":"Lake Erie Medical & Surgical Supply DBA Quality Care Products LLC","expression":75.76,"sample_count":81,"sample_gender":"Female"},{"gene":"Procter & Gamble Manufacturing Company","expression":27.18,"sample_count":65,"sample_gender":"Male"},{"gene":"Cover FX Skin Care, Inc.","expression":26.61,"sample_count":6,"sample_gender":"Female"},{"gene":"Topco Associates LLC","expression":8.08,"sample_count":85,"sample_gender":"Female"},{"gene":"Acella Pharmaceuticals, LLC","expression":95.69,"sample_count":28,"sample_gender":"Female"},{"gene":"JUBILANT CADISTA PHARMACEUTICALS, INC.","expression":6.91,"sample_count":68,"sample_gender":"Male"},{"gene":"CVS Pharmacy","expression":79.13,"sample_count":95,"sample_gender":"Male"},{"gene":"Sagent Pharmaceuticals","expression":34.17,"sample_count":63,"sample_gender":"Male"}];
 
-        var svg = document.querySelector("#testjs");
-        var testPlot = epiviz_scatter().create(svg, data);
-        testPlot.draw();
+        var origsvg = document.querySelector("#origData");
+        var origPlot = epiviz_scatter().create(origsvg, data);
+        origPlot.useKeys("sample_count", "expression", "gene");
+        origPlot.draw();
+
+        // var svg = document.querySelector("#testjs");
+        // var testPlot = epiviz_scatter().create(svg, data);
+        // testPlot.draw();
+        // testPlot.setDataBoundaries(20, 90, 20, 90).setProperties(6, "key");
+        // testPlot.setColors(['#025167', '#e7003e', '#ffcd00', '#057d9f', '#970026', '#ffe373', '#ff8100']);
     </script>
 
 </body>
